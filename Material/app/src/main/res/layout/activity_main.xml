@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context="com.example.naman_3uwwmg4.material.MainActivity">
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Form"
+        android:id="@+id/formb"
+        android:layout_gravity="center_horizontal" />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tabs"
+        android:id="@+id/tabb"
+        android:layout_gravity="center_horizontal" />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Color palette"
+        android:id="@+id/palette"
+        android:layout_gravity="center_horizontal" />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_weight="1" />
+</LinearLayout>
