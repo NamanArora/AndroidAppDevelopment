@@ -7,20 +7,7 @@
 
     android:orientation="vertical">
 
-    <shape xmlns:android="http://schemas.android.com/apk/res/android">
-        <gradient
-            android:endColor="@color/something"
-            android:centerColor="@color/something_else"
-            android:startColor="@color/something_else_still"
-            android:angle="270" />
-        <corners
-            android:radius="3dp" />
-        <padding
-            android:left="10dp"
-            android:top="10dp"
-            android:right="10dp"
-            android:bottom="10dp" />
-    </shape>
+
 
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"

@@ -1,6 +1,7 @@
 package com.upwork.naman.chavlate;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -17,6 +18,9 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +30,10 @@ public class Home extends AppCompatActivity {
     Toolbar toolbar;
     TextToSpeech t1;
     Intent recognizerIntent;
-    ImageButton fab;
+    ImageButton fab,exit;
     public static String PACKAGE_NAME;
+    TextView said,mean;
+    DatabaseHelper dbHelper;
     private final int REQ_CODE_SPEECH_INPUT = 100;
     ArrayList<String> myDataset;
     String result;
@@ -49,6 +55,12 @@ public class Home extends AppCompatActivity {
             public void onClick(View view) {
                 sr.startListening(recognizerIntent);
                 Log.e("chavlate","onclick");
+            }
+        });
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
@@ -74,24 +86,54 @@ public class Home extends AppCompatActivity {
         PACKAGE_NAME = getApplicationContext().getPackageName();
         myDataset= new ArrayList<>();
         //toolbar = (Toolbar) findViewById(R.id.toolbar);
-        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new MyAdapter(myDataset);
-        mRecyclerView.setAdapter(mAdapter);
+//        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+//        mLayoutManager = new LinearLayoutManager(this);
+//        mRecyclerView.setLayoutManager(mLayoutManager);
+//        mAdapter = new MyAdapter(myDataset);
+//        mRecyclerView.setAdapter(mAdapter);
+        said= (TextView) findViewById(R.id.said);
+        mean= (TextView) findViewById(R.id.mean);
         fab = (ImageButton) findViewById(R.id.fab);
+        exit = (ImageButton) findViewById(R.id.exit);
         fab.setEnabled(false);
         recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE,
-                "en");
+                "en-US");
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
                 this.getPackageName());
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
         sr= SpeechRecognizer.createSpeechRecognizer(this);
         sr.setRecognitionListener(new listener());
+        //updateDb();
+        dbHelper= new DatabaseHelper(getApplicationContext());
+
+        dbHelper.createDatabase();
+        dbHelper.openDatabase();
     }
+
+//    private void updateDb() {
+//
+//        try
+//        {
+//            String myPath = getDatabasePath(DatabaseHelper.DB_NAME).toString();
+//            //open a database directly without Sqliteopenhelper
+//            SQLiteDatabase myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+//            //if the version is default 0 the update the version
+//            if (myDataBase.getVersion() == 0)
+//            {
+//                //update the database version to the previous one
+//                myDataBase.execSQL("PRAGMA user_version = " + 1);
+//            }
+//            //Close DataBase
+//            myDataBase.close();
+//        }
+//        catch (Exception e)
+//        {
+//            //Do Nothing a fresh install happened
+//        }
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -195,11 +237,26 @@ public class Home extends AppCompatActivity {
 
         @Override
         public void onResults(Bundle results) {
-
-            result= results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION).get(0);
-            myDataset.add(0,result);
-            mAdapter.notifyDataSetChanged();
-            t1.speak(SpeechHelper.meaning(result), TextToSpeech.QUEUE_FLUSH, null);
+            String meaning;
+//            StringBuilder sb= new StringBuilder();
+            int i;
+            ArrayList<String> a= results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            //Check database for close sounding words, if word found break.
+            for(i=0; i<a.size(); i++) {
+                result = a.get(i);
+//                sb.append(result);
+//                sb.append(" ");
+                if(dbHelper.itExists(result))
+                    break;
+            }
+            //If no such word is found, go with the most accurate prediction.
+            if(i==a.size())
+                result=a.get(0);
+            meaning= dbHelper.getMeaning(result);
+//            said.setText(sb.toString());
+            said.setText(result);
+            t1.speak(meaning, TextToSpeech.QUEUE_FLUSH, null);
+            mean.setText(meaning);
         }
 
         @Override
