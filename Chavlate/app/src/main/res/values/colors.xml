@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#00616161</color>
+    <color name="colorPrimaryDark">#00616161</color>
+<color name="back">#091117</color>
+<color name="card">#17232e</color>
+
+    <color name="appcolor">#455a64</color>
+    <color name="colorAccent">#00616161</color> #for floating button
+    <color name="grayline">#9e9e9e</color>
+    <color name="saidtext">#f3741f</color>
+    <color name="meantext">#f3741f</color>
+</resources>
